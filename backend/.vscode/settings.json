@@ -1,3 +1,4 @@
 {
-  "dotnet.defaultSolution": "RamsoftChallenge/RamsoftChallenge.sln"
+  "dotnet.defaultSolution": "RamsoftChallenge/RamsoftChallenge.sln",
+  "dotnet-test-explorer.testProjectPath": "./Tests/Tests.csproj"
 }
