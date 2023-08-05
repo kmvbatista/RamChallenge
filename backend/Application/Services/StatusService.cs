@@ -13,20 +13,22 @@ public class StatusService : IStatusService
         _statusRepository = statusRepository;
         _statusMapper = new StatusMapper();
     }
-    public async Task Create(StatusRequestModel requestModel)
+    public async Task<Status> Create(StatusRequestModel requestModel)
     {
+        var lastStatusByOrder = _statusRepository.GetStatusByLatestOrder();
         Status status = MapStatusFromRequestModel(requestModel);
-        await _statusRepository.Create(status);
+        status.Order = lastStatusByOrder.Order + 1;
+        return await _statusRepository.Create(status);
     }
     public async Task<Status> GetById(Guid id)
     {
         var status = await _statusRepository.GetById(id);
         return status;
     }
-    public async Task<IEnumerable<StatusResponseModel>> GetAll()
+    public async Task<IList<StatusResponseModel>> GetAll()
     {
         var tasks = await _statusRepository.GetAll();
-        var statusResponse = tasks.Select(MapStatusToResponseModel);
+        var statusResponse = tasks.Select(MapStatusToResponseModel).ToList();
         return statusResponse;
     }
     public async Task Update(Guid id, StatusRequestModel statusRequestModel)

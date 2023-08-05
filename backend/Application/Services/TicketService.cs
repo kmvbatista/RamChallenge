@@ -16,20 +16,19 @@ public class TicketService : ITicketService
         _ticketMapper = new TicketMapper();
         _status_service = status_service;
     }
-    public async Task Create(TicketRequestModel requestModel)
+    public async Task<Ticket> Create(TicketRequestModel requestModel)
     {
-        Status ticketStatus = await _status_service.GetById(requestModel.StatusId);
-        requestModel.Status = ticketStatus;
         Ticket ticket = MapTicketFromRequestModel(requestModel);
-        await _ticketRepository.Create(ticket);
+        Status ticketStatus = await _status_service.GetById(new Guid(requestModel.Statusid));
+        ticket.Status = ticketStatus;
+        return await _ticketRepository.Create(ticket);
     }
-    public async Task<IEnumerable<TicketResponseModel>> GetAll()
+    public async Task<IList<TicketResponseModel>> GetAll()
     {
         var tasks = await _ticketRepository.GetAll();
-        var ticketResponse = tasks.Select(MapTicketToResponseModel);
+        var ticketResponse = tasks.Select(MapTicketToResponseModel).ToList();
         return ticketResponse;
     }
-
     public async Task<TicketResponseModel> GetById(Guid id)
     {
         var ticket = await _ticketRepository.GetById(id);
@@ -45,7 +44,6 @@ public class TicketService : ITicketService
     {
         await _ticketRepository.Delete(id);
     }
-
     private TicketResponseModel MapTicketToResponseModel(Ticket ticket) => _ticketMapper.MapToResponseModel(ticket);
     private Ticket MapTicketFromRequestModel(TicketRequestModel ticket)
     {

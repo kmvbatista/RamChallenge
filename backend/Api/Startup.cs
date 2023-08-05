@@ -22,12 +22,18 @@ namespace Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddMvc(options =>
+                options.Filters.Add(typeof(JsonExceptionFilter))
+            );
             DotEnv.Load(options: new DotEnvOptions(envFilePaths: new[] { "../.env" }));
             services.AddControllers();
             var connectionString = System.Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
             // services.AddDbContext<MainContext>(builder => builder.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDbContext<MainContext>(builder => builder.UseNpgsql(connectionString));
+            services.AddTransient<ITicketService, TicketService>();
+            services.AddTransient<ITicketRepository, TicketRepository>();
+            services.AddTransient<IStatusService, StatusService>();
+            services.AddTransient<IStatusRepository, StatusRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -7,7 +7,8 @@ public class Ticket : BaseEntity
     public string Description { get; set; }
     public DateTime Deadline { get; set; }
     public virtual IList<Link> Links { get; set; }
-    public virtual Status Status { get; }
+    public virtual Status Status { get; set; }
+    public Guid StatusId { get; set; }
     public void Update(Ticket ticket, TicketRequestModel requestModel)
     {
         ticket.Name = requestModel.Name;
