@@ -6,13 +6,14 @@ public class JsonExceptionFilter : IExceptionFilter
     public void OnException(ExceptionContext context)
     {
         dynamic result;
-        if (context.Exception.InnerException is FluentValidation.ValidationException)
+        var exception = context.Exception.InnerException ?? context.Exception;
+        if (exception is FluentValidation.ValidationException)
         {
             result = new ObjectResult(new
             {
                 code = 400,
 
-                message = context.Exception.InnerException.Message,
+                message = exception.Message,
             });
             result.StatusCode = 400;
 
