@@ -1,0 +1,4 @@
+{
+    "omnisharp.useEditorFormattingSettings": false,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
