@@ -13,9 +13,25 @@ import { TicketCategory } from "src/models/TicketCategory";
 
 interface TicketPageProps {
   ticket: TicketModel;
+  dragProvided: any;
+  dragSnapshot: any;
 }
 
-const Ticket: React.FC<TicketPageProps> = ({ ticket }) => {
+const Ticket: React.FC<TicketPageProps> = ({
+  ticket,
+  dragProvided,
+  dragSnapshot: dragSnaphshot,
+}) => {
+  const getDraggableTicketStyle = (isDragging, draggableStyle) => {
+    console.log("isDragging", isDragging);
+    return {
+      ...draggableStyle,
+      userSelect: "none",
+      opacity: isDragging ? 0.5 : 1,
+      cursor: "move",
+      margin: "10px 0",
+    };
+  };
   return (
     <TicketContainer>
       <Row style={{ width: "100%" }}>
