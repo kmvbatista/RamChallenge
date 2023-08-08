@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Column, Row } from "src/components/GlobalComponents";
 import { TicketModel } from "src/models/TicketModel";
 import {
@@ -15,6 +15,7 @@ import { useForm } from "src/customHooks/useForm";
 import {
   createTicket,
   deleteTicket,
+  saveTicketImage,
   updateTicket,
 } from "src/services/ticketService";
 import { useNavigate } from "react-router-dom";
@@ -32,6 +33,7 @@ const Ticket: React.FC<TicketPageProps> = ({
   isMinimizedVersion,
   statuses,
 }) => {
+  const [selectedImage, setSelectedImage] = useState(null);
   const navigate = useNavigate();
   console.log(statuses);
   const initialFormValue: TicketModel = ticket
@@ -72,6 +74,18 @@ const Ticket: React.FC<TicketPageProps> = ({
   }
 
   console.log(formValues.deadline && formValues.deadline.split("T")[0]);
+
+  const handleImageChange = (event) => {
+    setSelectedImage(event.target.files[0]);
+  };
+
+  async function handleUpload() {
+    const formData = new FormData();
+    formData.append("image", selectedImage);
+    debugger;
+    const newTicketData = await saveTicketImage(ticket.id, formData);
+    reset({ ...newTicketData });
+  }
 
   return (
     <TicketContainer>
@@ -129,6 +143,8 @@ const Ticket: React.FC<TicketPageProps> = ({
           <option value={status.id}>{status.name}</option>
         ))}
       </select>
+      <input type="file" accept="image/*" onChange={handleImageChange} />
+      <button onClick={handleUpload}>Upload</button>
       {isCreatingNewTicket && <button onClick={saveNewTicket}>Save</button>}
     </TicketContainer>
   );

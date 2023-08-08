@@ -45,7 +45,7 @@ namespace Api
                 options.Filters.Add(typeof(JsonExceptionFilter))
             );
             DotEnv.Load(options: new DotEnvOptions(envFilePaths: new[] { "../.env" }));
-            services.AddControllers().AddJsonOptions(opt =>
+            services.AddControllers().AddNewtonsoftJson().AddJsonOptions(opt =>
             {
                 opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });

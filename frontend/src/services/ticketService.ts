@@ -24,3 +24,12 @@ export async function deleteTicket(ticketId) {
   const response = await api.delete(`/ticket/${ticketId}`);
   return response.data;
 }
+
+export async function saveTicketImage(ticketId, formData) {
+  const response = await api.post(`/ticket/${ticketId}/image`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+}

@@ -9,4 +9,5 @@ public interface ITicketService
     Task<TicketResponseModel> GetById(Guid id);
     Task<TicketResponseModel> Update(Guid id, TicketRequestModel ticketRequestModel);
     Task Delete(Guid id);
+    Task<TicketResponseModel> AddTicketLink(Guid id, string linkUrl);
 }

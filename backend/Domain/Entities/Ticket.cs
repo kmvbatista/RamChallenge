@@ -7,17 +7,27 @@ public class Ticket : BaseEntity
     public string Description { get; set; }
     public DateTime Deadline { get; set; }
     public TicketCategory Category { get; set; }
-    public virtual IList<Link> Links { get; set; }
+    public IList<Link> Links { get; set; }
     public virtual Status Status { get; set; }
     public Guid StatusId { get; set; }
-    public void Update(Ticket ticket, TicketRequestModel requestModel)
+    public void Update(TicketRequestModel requestModel)
     {
-        ticket.Name = requestModel.Name;
-        ticket.Deadline = requestModel.Deadline;
-        ticket.Description = requestModel.Description;
-        ticket.StatusId = requestModel.StatusId;
-        ticket.Category = requestModel.Category;
-        ticket.Validate();
+        this.Name = requestModel.Name;
+        this.Deadline = requestModel.Deadline;
+        this.Description = requestModel.Description;
+        this.StatusId = requestModel.StatusId;
+        this.Category = requestModel.Category;
+        this.Validate();
+    }
+
+    public void AddLink(string linkUrl)
+    {
+        var newLink = new Link(this.Id, linkUrl);
+        if (this.Links is null)
+        {
+            this.Links = new List<Link>();
+        }
+        this.Links.Add(newLink);
     }
 
     public override void Validate()
