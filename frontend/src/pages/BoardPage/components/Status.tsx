@@ -3,158 +3,39 @@ import { TicketCategory } from "src/models/TicketCategory";
 import { TicketModel } from "src/models/TicketModel";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { Column } from "src/components/GlobalComponents";
-import { BoardTitle } from "src/pages/TicketPage/styles";
 import Ticket from "src/pages/TicketPage/components/Ticket";
+import { BoardTitle } from "src/styles";
 
 interface StatusProps {
   status: any;
   dropProvided: any;
+  ticketsByStatusId: { statusId: TicketModel[] };
 }
 
-const Status: React.FC<StatusProps> = ({ status, dropProvided }) => {
-  const tickets: TicketModel[] = [
-    {
-      id: 1,
-      name: "axxa",
-      statusId: 1,
-      category: TicketCategory.favorite,
-      deadline: new Date(),
-      images: [
-        {
-          url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Central_Canada.svg/706px-Central_Canada.svg.png",
-        },
-        {
-          url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Central_Canada.svg/706px-Central_Canada.svg.png",
-        },
-        {
-          url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Central_Canada.svg/706px-Central_Canada.svg.png",
-        },
-        {
-          url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Central_Canada.svg/706px-Central_Canada.svg.png",
-        },
-        {
-          url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Central_Canada.svg/706px-Central_Canada.svg.png",
-        },
-      ],
-      description:
-        "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lore",
-    },
-    {
-      id: 2,
-      name: "abba",
-      statusId: 1,
-      category: TicketCategory.favorite,
-      deadline: new Date(),
-      images: [
-        {
-          url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Central_Canada.svg/706px-Central_Canada.svg.png",
-        },
-        {
-          url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Central_Canada.svg/706px-Central_Canada.svg.png",
-        },
-        {
-          url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Central_Canada.svg/706px-Central_Canada.svg.png",
-        },
-      ],
-      description:
-        "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lore",
-    },
-    {
-      id: 3,
-      name: "aaddda",
-      statusId: 1,
-      category: TicketCategory.favorite,
-      deadline: new Date(),
-      images: [
-        {
-          url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Central_Canada.svg/706px-Central_Canada.svg.png",
-        },
-        {
-          url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Central_Canada.svg/706px-Central_Canada.svg.png",
-        },
-        {
-          url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Central_Canada.svg/706px-Central_Canada.svg.png",
-        },
-      ],
-      description:
-        "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lore",
-    },
-    {
-      id: 4,
-
-      name: "dasfadsf",
-      statusId: 1,
-      category: TicketCategory.favorite,
-      deadline: new Date(),
-      images: [],
-      description:
-        "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lore",
-    },
-    {
-      id: 5,
-
-      name: "dsaf",
-      statusId: 2,
-      category: TicketCategory.favorite,
-      deadline: new Date(),
-      images: [
-        {
-          url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Central_Canada.svg/706px-Central_Canada.svg.png",
-        },
-      ],
-      description: null,
-    },
-    {
-      id: 6,
-      name: "dsfafads",
-      statusId: 2,
-      category: null,
-      deadline: new Date(),
-      images: [
-        {
-          url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Central_Canada.svg/706px-Central_Canada.svg.png",
-        },
-        {
-          url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Central_Canada.svg/706px-Central_Canada.svg.png",
-        },
-        {
-          url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Central_Canada.svg/706px-Central_Canada.svg.png",
-        },
-      ],
-      description:
-        "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lore",
-    },
-  ];
-
-  const ticketsByStatusId = tickets.reduce((accumulator, next) => {
-    if (!accumulator[next.statusId]) {
-      accumulator[next.statusId] = [];
-    }
-    accumulator[next.statusId].push(next);
-    return accumulator;
-  }, {} as any);
-  console.log(ticketsByStatusId);
+const Status: React.FC<StatusProps> = ({
+  status,
+  dropProvided,
+  ticketsByStatusId,
+}) => {
   const getDraggableTicketStyle = (isDragging, draggableStyle) => {
     console.log("isDragging", isDragging);
     return {
       ...draggableStyle,
       userSelect: "none",
       opacity: isDragging ? 0.5 : 1,
-      cursor: "move",
       margin: "10px 0",
-      backgroundColor: "black",
     };
   };
   return (
     <Column
       style={{
         height: "100%",
-        minWidth: "50px",
+        minWidth: "310px",
         marginRight: "10px",
         backgroundColor: "#727272bd",
       }}
       ref={dropProvided.innerRef}
-      {...dropProvided.droppableProps}
+      // {...dropProvided.droppableProps}
     >
       <BoardTitle>{status.name}</BoardTitle>
       <Column
@@ -165,7 +46,11 @@ const Status: React.FC<StatusProps> = ({ status, dropProvided }) => {
         }}
       >
         {ticketsByStatusId[status.id].map((ticket, index) => (
-          <Draggable key={ticket.id} draggableId={ticket.id} index={index}>
+          <Draggable
+            key={ticket.id.toString()}
+            draggableId={ticket.id.toString()}
+            index={index}
+          >
             {(dragProvided, dragSnapshot) => {
               return (
                 <div
@@ -181,8 +66,7 @@ const Status: React.FC<StatusProps> = ({ status, dropProvided }) => {
                   <Ticket
                     key={ticket.id}
                     ticket={ticket}
-                    dragProvided={dragProvided}
-                    dragSnapshot={dragSnapshot}
+                    isMinimizedVersion
                   ></Ticket>
                 </div>
               );

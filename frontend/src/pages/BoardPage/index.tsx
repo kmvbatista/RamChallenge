@@ -1,59 +1,107 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Column, Row } from "../../components/GlobalComponents";
 import Ticket from "../TicketPage/components/Ticket";
 import { TicketCategory } from "src/models/TicketCategory";
 import { TicketModel } from "src/models/TicketModel";
-import { BoardTitle } from "../TicketPage/styles";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { BoardTitle } from "../../styles";
+import {
+  DragDropContext,
+  Draggable,
+  DropResult,
+  Droppable,
+  OnDragEndResponder,
+} from "react-beautiful-dnd";
 import Status from "./components/Status";
+import { getAllStatuses } from "src/services/statusService";
+import { getAllTickets, updateTicket } from "src/services/ticketService";
+import { Link } from "react-router-dom";
 
 interface BoardProps {}
 
 const Board: React.FC<BoardProps> = (props) => {
-  const statuses = [
-    { id: 2, name: "next", order: 1 },
-    { id: 1, name: "ssafads", order: 0 },
-  ];
-  // console.log(ticketsByStatusId);
-  const sortedStatuses = statuses.sort((a, b) => a.order - b.order);
+  const [statuses, setStatuses] = useState<any>();
+  const [tickets, setTickets] = useState<TicketModel[]>();
 
-  function onDragEnd(any) {}
+  useEffect(() => {
+    async function fetchStatuses() {
+      const foundStatuses = await getAllStatuses();
+      setStatuses(foundStatuses);
+    }
+    async function fetchTickets() {
+      const foundtickets = await getAllTickets();
+      setTickets(foundtickets);
+    }
+    fetchStatuses();
+    fetchTickets();
+  }, []);
+
+  function getTicketsByStatusId() {
+    if (statuses && tickets) {
+      const ticketsByStatusId = tickets.reduce((accumulator, next) => {
+        if (!accumulator[next.statusId]) {
+          accumulator[next.statusId] = [];
+        }
+        accumulator[next.statusId].push(next);
+        return accumulator;
+      }, {} as any);
+      for (const status of statuses) {
+        if (!(status.id in ticketsByStatusId)) {
+          ticketsByStatusId[status.id] = [];
+        }
+      }
+      return ticketsByStatusId;
+    }
+  }
+  const sortedStatuses = statuses?.sort((a, b) => a.order - b.order);
+  const ticketsByStatusId = getTicketsByStatusId();
+
+  function onDragEnd(result: DropResult) {
+    const ticketId = result.draggableId;
+    const newStatusId = result.destination.droppableId;
+    const ticketsToUpdate = [...tickets];
+    const movedTicket = tickets.find((x) => x.id === result.draggableId);
+    movedTicket.statusId = newStatusId;
+    setTickets(ticketsToUpdate);
+    debugger;
+    updateTicket(ticketId, movedTicket);
+  }
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Column
+    <Column
+      style={{
+        height: "100vh",
+        width: "100vw",
+        backgroundColor: "rgba(202, 204, 205, 0.8)",
+      }}
+    >
+      <Row>
+        <Link to={"/ticket/new"}>Create new ticket</Link>
+      </Row>
+      <Row
         style={{
-          height: "100vh",
-          width: "100vw",
-          backgroundColor: "rgba(202, 204, 205, 0.8)",
+          height: "100%",
+          padding: "15px",
+          minWidth: "80%",
+          justifyContent: "flex-start",
         }}
       >
-        <Row
-          style={{
-            height: "100%",
-            padding: "15px",
-            minWidth: "80%",
-            justifyContent: "flex-start",
-          }}
-        >
-          {/* <Status status={status}></Status> */}
-          {sortedStatuses.map((status) => (
-            <Droppable
-              droppableId={status.id.toString()}
-              direction="horizontal"
-              type="QUOTE"
-            >
-              {(dropProvided, dropSnapshot) => (
-                <Status
-                  dropProvided={dropProvided}
-                  status={status}
-                  // ticketsByStatusId={ticketsByStatusId}
-                ></Status>
-              )}
-            </Droppable>
-          ))}
-        </Row>
-      </Column>
-    </DragDropContext>
+        <DragDropContext onDragEnd={onDragEnd}>
+          {sortedStatuses &&
+            tickets &&
+            sortedStatuses.map((status) => (
+              <Droppable droppableId={status.id.toString()} type="QUOTE">
+                {(dropProvided, dropSnapshot) => (
+                  <Status
+                    key={status.id}
+                    dropProvided={dropProvided}
+                    status={status}
+                    ticketsByStatusId={ticketsByStatusId}
+                  ></Status>
+                )}
+              </Droppable>
+            ))}
+        </DragDropContext>
+      </Row>
+    </Column>
   );
 };
 

@@ -7,6 +7,6 @@ public interface ITicketService
     Task<Ticket> Create(TicketRequestModel requestModel);
     Task<IList<TicketResponseModel>> GetAll();
     Task<TicketResponseModel> GetById(Guid id);
-    Task Update(Guid id, TicketRequestModel ticketRequestModel);
+    Task<TicketResponseModel> Update(Guid id, TicketRequestModel ticketRequestModel);
     Task Delete(Guid id);
 }

@@ -1,11 +1,15 @@
-import './App.css';
-import Board from './pages/BoardPage';
+import { BrowserRouter } from "react-router-dom";
+import "./App.css";
+import Board from "./pages/BoardPage";
+import AppRoutes from "./Routes";
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-       <Board></Board>
+        <BrowserRouter>
+          <AppRoutes></AppRoutes>
+        </BrowserRouter>
       </header>
     </div>
   );

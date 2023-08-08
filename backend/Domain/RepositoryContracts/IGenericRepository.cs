@@ -8,6 +8,6 @@ public interface IGenericRepository<TEntity>
     Task<IList<TEntity>> GetAll();
     Task<TEntity> GetById(Guid id);
     Task<TEntity> Create(TEntity entity);
-    Task Update(TEntity entity);
+    Task<TEntity> Update(TEntity entity);
     Task Delete(Guid id);
 }

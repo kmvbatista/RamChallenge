@@ -40,9 +40,10 @@ public abstract class GenericRepository<TEntity>
             .FirstOrDefaultAsync(e => e.Id == id);
     }
 
-    public async Task Update(TEntity entity)
+    public async Task<TEntity> Update(TEntity entity)
     {
         _dbContext.Set<TEntity>().Update(entity);
         await _dbContext.SaveChangesAsync();
+        return entity;
     }
 }

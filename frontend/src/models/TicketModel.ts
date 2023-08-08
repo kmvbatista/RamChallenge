@@ -1,11 +1,11 @@
 import { TicketCategory } from "./TicketCategory";
 
 export interface TicketModel {
-  id: number;
+  id: string;
   name: string;
-  statusId: number;
+  statusId: string;
   description: string;
-  deadline: Date;
+  deadline: any;
   category: TicketCategory;
-  images: { url: string }[];
+  links: { url: string }[];
 }

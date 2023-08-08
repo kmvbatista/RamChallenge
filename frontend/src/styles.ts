@@ -1,9 +1,14 @@
+import { Link } from "react-router-dom";
 import { Column, Row } from "src/components/GlobalComponents";
 import styled from "styled-components";
 
 export const NameInput = styled.input`
   width: 100%;
   height: 12px;
+`;
+
+export const OpenTicketButton = styled(Link)`
+  font-size: 16px;
 `;
 
 export const DescriptionInput = styled.textarea`

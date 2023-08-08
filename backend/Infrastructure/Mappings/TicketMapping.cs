@@ -8,6 +8,7 @@ public class TicketMapping : IEntityTypeConfiguration<Ticket>
         builder.Property(t => t.Deadline).HasColumnName(nameof(Ticket.Deadline)).IsRequired(); ;
         builder.Property(t => t.Name).HasColumnName(nameof(Ticket.Name)).IsRequired(); ;
         builder.Property(t => t.Description).HasColumnName(nameof(Ticket.Description)).IsRequired(); ;
+        builder.Property(t => t.Category).HasColumnName(nameof(Ticket.Category));
         builder.HasOne<Status>(t => t.Status).WithMany();
     }
 }
