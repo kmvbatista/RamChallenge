@@ -36,17 +36,24 @@ const Status: React.FC<StatusProps> = ({
     ? sortTickets(statusTickets)
     : statusTickets;
 
+  function replaceItemAtIndex(array, index, newItem) {
+    if (index >= 0 && index < array.length) {
+      array[index] = newItem;
+    }
+    return array;
+  }
+
   function onTicketChange(ticket) {
     setTickets((previousTickets) => {
-      const foundTicket = previousTickets.find((t) => t.id === ticket.id);
-      const newListWithoutFoundTicket = previousTickets.filter(
-        (t) => t.id !== ticket.id
+      const foundTicketIndex = previousTickets.findIndex(
+        (t) => t.id === ticket.id
       );
-      newListWithoutFoundTicket.push({
-        ...foundTicket,
-        ...ticket,
-      });
-      return newListWithoutFoundTicket;
+      const newTickets = replaceItemAtIndex(
+        previousTickets,
+        foundTicketIndex,
+        ticket
+      );
+      return [...newTickets];
     });
   }
 
