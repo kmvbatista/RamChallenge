@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { TicketCategory } from "src/models/TicketCategory";
 import { TicketModel } from "src/models/TicketModel";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { Column } from "src/components/GlobalComponents";
+import { Column, Row } from "src/components/GlobalComponents";
 import Ticket from "src/pages/TicketPage/components/Ticket";
-import { BoardTitle } from "src/styles";
+import { SortButton, StatusTitle } from "src/styles";
 
 interface StatusProps {
   status: any;
@@ -17,6 +17,7 @@ const Status: React.FC<StatusProps> = ({
   dropProvided,
   ticketsByStatusId,
 }) => {
+  const [isSorting, setIsSorting] = useState<boolean>(false);
   const getDraggableTicketStyle = (isDragging, draggableStyle) => {
     console.log("isDragging", isDragging);
     return {
@@ -26,6 +27,37 @@ const Status: React.FC<StatusProps> = ({
       margin: "10px 0",
     };
   };
+  function sortTickets(tickets: TicketModel[]) {
+    return tickets.sort((ticketA, ticketB) => {
+      if (
+        ticketA.category === TicketCategory.favorite &&
+        ticketB.category !== TicketCategory.favorite
+      ) {
+        return -1;
+      }
+      if (
+        ticketA.category !== TicketCategory.favorite &&
+        ticketB.category === TicketCategory.favorite
+      ) {
+        return 1;
+      }
+
+      if (ticketA.name < ticketB.name) {
+        return -1;
+      }
+      if (ticketA.name > ticketB.name) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+
+  const statusTickets = ticketsByStatusId[status.id];
+
+  const sortedStatusTickets = isSorting
+    ? sortTickets(statusTickets)
+    : statusTickets;
+
   return (
     <Column
       style={{
@@ -35,17 +67,23 @@ const Status: React.FC<StatusProps> = ({
         borderRadius: "5px",
       }}
       ref={dropProvided.innerRef}
-      // {...dropProvided.droppableProps}
     >
-      <BoardTitle>{status.name}</BoardTitle>
+      <Row style={{ justifyContent: "space-around", padding: "8px" }}>
+        <StatusTitle>{status.name}</StatusTitle>
+        <SortButton
+          src="/sort.png"
+          onClick={() => setIsSorting(!isSorting)}
+        ></SortButton>
+      </Row>
       <Column
         style={{
           height: "100%",
-          justifyContent: "flex-start",
-          width: "fit-content",
+          justifyContent: "center",
+          width: "100%",
+          alignItems: "center",
         }}
       >
-        {ticketsByStatusId[status.id].map((ticket, index) => (
+        {sortedStatusTickets.map((ticket, index) => (
           <Draggable
             key={ticket.id.toString()}
             draggableId={ticket.id.toString()}

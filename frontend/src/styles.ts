@@ -8,7 +8,7 @@ export const NameInput = styled.input`
 `;
 
 export const OpenTicketButton = styled(Link)`
-  font-size: 16px;
+  font-size: 11px;
 `;
 
 export const DescriptionInput = styled.textarea`
@@ -59,7 +59,7 @@ export const TicketContainer = styled(Column)`
   background: #b6b6b6;
 `;
 
-export const BoardTitle = styled.p`
+export const StatusTitle = styled.p`
   text-align: center;
 `;
 
@@ -69,8 +69,19 @@ export const FavoriteIcon = styled.img`
   margin-right: 5px;
 `;
 
+export const SortButton = styled.img`
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+`;
+
 export const NewStatusContainer = styled(Column)`
   width: 100vh;
   padding: 10vh;
   margin: auto;
+`;
+
+export const PageLink = styled(Link)`
+  font-size: 12px;
+  padding: 15px;
 `;

@@ -7,6 +7,7 @@ import { getAllStatuses } from "src/services/statusService";
 import { getAllTickets, updateTicket } from "src/services/ticketService";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import { PageLink } from "src/styles";
 
 interface BoardProps {}
 
@@ -70,13 +71,13 @@ const Board: React.FC<BoardProps> = (props) => {
       }}
     >
       <Row>
-        <Link to={"/ticket/new"}>New ticket</Link>
-        <Link to={"/status/new"}>New status</Link>
+        <PageLink to={"/ticket/new"}>New ticket</PageLink>
+        <PageLink to={"/status/new"}>New status</PageLink>
       </Row>
       <Row
         style={{
           height: "100%",
-          padding: "15px",
+          padding: "0 15px",
           minWidth: "80%",
           justifyContent: "flex-start",
         }}

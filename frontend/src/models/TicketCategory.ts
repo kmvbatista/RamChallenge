@@ -1,4 +1,4 @@
 export enum TicketCategory {
-  favorite = "favorite",
-  noCategory = "noCategory",
+  favorite = 1,
+  noCategory = 2,
 }

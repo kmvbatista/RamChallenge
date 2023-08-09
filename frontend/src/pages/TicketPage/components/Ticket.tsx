@@ -45,7 +45,9 @@ const Ticket: React.FC<TicketPageProps> = ({
     ? {
         links: [],
         ...ticket,
-        statusId: statuses && statuses[0].id,
+        statusId: isCreatingNewTicket
+          ? statuses && statuses[0].id
+          : ticket.statusId,
       }
     : ({} as TicketModel);
   const [formValues, updateValues, setFormValues] = useForm<TicketModel>({
@@ -79,8 +81,6 @@ const Ticket: React.FC<TicketPageProps> = ({
     setFormValues(newFormValues);
     saveEdittingChanges(newFormValues);
   }
-
-  console.log(formValues.deadline && formValues.deadline.split("T")[0]);
 
   const handleImageChange = (event) => {
     setSelectedImage(event.target.files[0]);
@@ -130,9 +130,7 @@ const Ticket: React.FC<TicketPageProps> = ({
           onBlur={() => saveEdittingChanges(formValues)}
         ></NameInput>
         {isMinimizedVersion ? (
-          <OpenTicketButton to={`/ticket/${ticket.id}`}>
-            Open Ticket
-          </OpenTicketButton>
+          <OpenTicketButton to={`/ticket/${ticket.id}`}>Open</OpenTicketButton>
         ) : (
           !isCreatingNewTicket && (
             <DeleteTicketButton
