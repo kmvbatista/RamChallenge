@@ -33,6 +33,7 @@ const Status: React.FC<StatusProps> = ({
         minWidth: "310px",
         marginRight: "10px",
         backgroundColor: "#727272bd",
+        borderRadius: "5px",
       }}
       ref={dropProvided.innerRef}
       // {...dropProvided.droppableProps}

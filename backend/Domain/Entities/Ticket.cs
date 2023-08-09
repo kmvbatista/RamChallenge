@@ -20,7 +20,7 @@ public class Ticket : BaseEntity
         this.Validate();
     }
 
-    public void AddLink(string linkUrl)
+    public void UpdateLinks(string linkUrl)
     {
         var newLink = new Link(this.Id, linkUrl);
         if (this.Links is null)

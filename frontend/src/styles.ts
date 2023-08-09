@@ -24,11 +24,31 @@ export const ImagesList = styled(Row)`
   overflow: scroll;
 `;
 
+export const ImageContainer = styled.div`
+  position: relative;
+  padding-top: 5px;
+  margin-right: 5px;
+  padding-left: 0;
+`;
+
+export const DeleteTicketButton = styled.img`
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+`;
+
+export const DeleteImageButton = styled.img`
+  cursor: pointer;
+  position: absolute;
+  right: -1px;
+  top: 0;
+  width: 8px;
+  height: 8px;
+`;
+
 export const TicketImage = styled.img`
   max-width: 80px;
   max-height: 80px;
-  padding: 5px;
-  padding-left: 0;
 `;
 
 export const TicketContainer = styled(Column)`

@@ -56,20 +56,23 @@ const Board: React.FC<BoardProps> = (props) => {
   const ticketsByStatusId = getTicketsByStatusId();
 
   function onDragEnd(result: DropResult) {
-    const ticketId = result.draggableId;
     const newStatusId = result.destination.droppableId;
-    const ticketsToUpdate = [...tickets];
-    const movedTicket = tickets.find((x) => x.id === result.draggableId);
-    movedTicket.statusId = newStatusId;
-    setTickets(ticketsToUpdate);
-    debugger;
-    updateTicket(ticketId, movedTicket);
+    if (newStatusId) {
+      const ticketId = result.draggableId;
+      const ticketsToUpdate = [...tickets];
+      const movedTicket = tickets.find((x) => x.id === result.draggableId);
+      if (newStatusId !== movedTicket.statusId) {
+        movedTicket.statusId = newStatusId;
+        setTickets(ticketsToUpdate);
+        updateTicket(ticketId, movedTicket);
+      }
+    }
   }
   return (
     <Column
       style={{
-        height: "100vh",
-        width: "100vw",
+        minHeight: "100vh",
+        minWidth: "100vw",
         backgroundColor: "rgba(202, 204, 205, 0.8)",
       }}
     >

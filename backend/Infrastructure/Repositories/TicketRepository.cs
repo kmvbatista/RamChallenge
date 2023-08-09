@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Infraestructure.Context;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
 public class TicketRepository : GenericRepository<Ticket>, ITicketRepository
@@ -24,5 +23,12 @@ public class TicketRepository : GenericRepository<Ticket>, ITicketRepository
     public new async Task<IList<Ticket>> GetAll()
     {
         return await _dbContext.Set<Ticket>().Include(ticket => ticket.Links).ToListAsync();
+    }
+    public async Task RemoveTicketLink(Guid linkId)
+    {
+        var entity = await _dbContext.Set<Link>().AsNoTracking()
+           .FirstOrDefaultAsync(e => e.Id == linkId);
+        _dbContext.Set<Link>().Remove(entity);
+        await _dbContext.SaveChangesAsync();
     }
 }

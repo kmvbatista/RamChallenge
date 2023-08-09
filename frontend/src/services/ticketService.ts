@@ -26,7 +26,21 @@ export async function deleteTicket(ticketId) {
 }
 
 export async function saveTicketImage(ticketId, formData) {
-  const response = await api.post(`/ticket/${ticketId}/image`, formData, {
+  const response = await api.post(`/ticket/${ticketId}/file`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+}
+
+export async function deleteTicketImage(imageId) {
+  const response = await api.delete(`/ticket/file/${imageId}`);
+  return response.data;
+}
+
+export async function uploadImage(formData) {
+  const response = await api.post(`/ticket/file`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Azure.Storage;
 using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,7 +50,17 @@ namespace Api.Controllers
         {
             await _ticketService.Delete(id);
         }
-        [Route("{ticketId}/image")]
+        [Route("file")]
+        [HttpPost]
+        public async Task<IActionResult> UploadFileEndoint()
+        {
+            var file = Request.Form.Files[0];
+            if (file == null || file.Length == 0)
+                throw new Exception("No file uploaded.");
+            var fileUrl = await UploadFile(file);
+            return Ok(fileUrl);
+        }
+        [Route("{ticketId}/file")]
         [HttpPost]
         public async Task<TicketResponseModel> AddTicketLink([FromRoute] Guid ticketId)
         {
@@ -59,25 +70,34 @@ namespace Api.Controllers
             var fileUrl = await UploadFile(file);
             return await _ticketService.AddTicketLink(ticketId, fileUrl);
         }
-
+        [Route("file/{linkId}")]
+        [HttpDelete]
+        public async Task DeleteTicketLink([FromRoute] Guid linkId)
+        {
+            await _ticketService.RemoveTicketLink(linkId);
+        }
         private async Task<string> UploadFile(IFormFile file)
         {
             StorageSharedKeyCredential storageCredentials =
-                    new StorageSharedKeyCredential("cs210032000e93dbb8e", "fxZTAGic2k6Uuk2hndDTa+eraKCYlW77+fkeJdMrBwa9AFORDHk/VVH3N+zWZHOrNAnvd6W0ikzT+AStmoAoSw==");
+                    new StorageSharedKeyCredential(Environment.GetEnvironmentVariable("AZURE_ACCOUNT_NAME"), Environment.GetEnvironmentVariable("AZURE_ACCOUNT_KEY"));
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
             Uri blobUri = new Uri("https://" +
-                            "cs210032000e93dbb8e" +
+                            Environment.GetEnvironmentVariable("AZURE_ACCOUNT_NAME") +
                             ".blob.core.windows.net/" +
-                            "new" +
+                            Environment.GetEnvironmentVariable("AZURE_CONTAINER_NAME") +
                             "/" + fileName);
 
-            // Create the blob client.
             BlobClient blobClient = new BlobClient(blobUri, storageCredentials);
-
-            // Upload the file
+            BlobUploadOptions options = new BlobUploadOptions
+            {
+                HttpHeaders = new BlobHttpHeaders
+                {
+                    ContentType = "image/jpg"
+                }
+            };
             using (var stream = file.OpenReadStream())
             {
-                await blobClient.UploadAsync(stream);
+                await blobClient.UploadAsync(stream, options);
             }
 
             await Task.FromResult(true);

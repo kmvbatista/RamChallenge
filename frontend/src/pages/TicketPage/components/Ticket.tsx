@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { Column, Row } from "src/components/GlobalComponents";
 import { TicketModel } from "src/models/TicketModel";
 import {
+  DeleteImageButton,
+  DeleteTicketButton,
   DescriptionInput,
   FavoriteIcon,
+  ImageContainer,
   ImagesList,
   NameInput,
   OpenTicketButton,
@@ -15,8 +18,10 @@ import { useForm } from "src/customHooks/useForm";
 import {
   createTicket,
   deleteTicket,
+  deleteTicketImage,
   saveTicketImage,
   updateTicket,
+  uploadImage,
 } from "src/services/ticketService";
 import { useNavigate } from "react-router-dom";
 
@@ -34,14 +39,17 @@ const Ticket: React.FC<TicketPageProps> = ({
   statuses,
 }) => {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [ticketCreationLinks, setticketCreationLinks] = useState<any[]>([]);
   const navigate = useNavigate();
   console.log(statuses);
   const initialFormValue: TicketModel = ticket
     ? {
+        links: [],
         ...ticket,
+        statusId: statuses && statuses[0].id,
       }
     : ({} as TicketModel);
-  const [formValues, updateValues, reset] = useForm<TicketModel>({
+  const [formValues, updateValues, setFormValues] = useForm<TicketModel>({
     ...initialFormValue,
   });
 
@@ -52,7 +60,7 @@ const Ticket: React.FC<TicketPageProps> = ({
   }
 
   async function saveNewTicket() {
-    await createTicket({ ...formValues, links: [] });
+    await createTicket({ ...formValues });
     navigate("/");
   }
 
@@ -69,7 +77,7 @@ const Ticket: React.FC<TicketPageProps> = ({
     } else {
       newFormValues.category = TicketCategory.favorite;
     }
-    reset(newFormValues);
+    setFormValues(newFormValues);
     saveEdittingChanges(newFormValues);
   }
 
@@ -82,9 +90,27 @@ const Ticket: React.FC<TicketPageProps> = ({
   async function handleUpload() {
     const formData = new FormData();
     formData.append("image", selectedImage);
-    debugger;
-    const newTicketData = await saveTicketImage(ticket.id, formData);
-    reset({ ...newTicketData });
+    if (isCreatingNewTicket) {
+      const imageUrl = await uploadImage(formData);
+      setFormValues({
+        ...formValues,
+        links: [...formValues.links, { url: imageUrl }],
+      });
+    } else {
+      const newTicketData = await saveTicketImage(ticket.id, formData);
+      setFormValues({ ...newTicketData });
+    }
+    setSelectedImage(null);
+  }
+
+  async function removeTicketImage(imageUrl, imageId) {
+    if (!isCreatingNewTicket) {
+      await deleteTicketImage(imageId);
+    }
+    setFormValues((previous) => ({
+      ...previous,
+      links: previous.links.filter((link) => link.url !== imageUrl),
+    }));
   }
 
   return (
@@ -94,8 +120,8 @@ const Ticket: React.FC<TicketPageProps> = ({
           onClick={handleFavorite}
           src={
             formValues.category === TicketCategory.favorite
-              ? "./favorite-full.png"
-              : "./favorite-empty.png"
+              ? "/favorite-full.png"
+              : "/favorite-empty.png"
           }
         ></FavoriteIcon>
         <NameInput
@@ -110,7 +136,10 @@ const Ticket: React.FC<TicketPageProps> = ({
           </OpenTicketButton>
         ) : (
           !isCreatingNewTicket && (
-            <button onClick={handleDeleteTicket}>Delete</button>
+            <DeleteTicketButton
+              src="/delete.png"
+              onClick={handleDeleteTicket}
+            ></DeleteTicketButton>
           )
         )}
       </Row>
@@ -129,7 +158,15 @@ const Ticket: React.FC<TicketPageProps> = ({
       ></input>
       <ImagesList>
         {formValues.links?.map((image) => (
-          <TicketImage src={image.url} key={image.url}></TicketImage>
+          <ImageContainer key={image.url}>
+            <a href={image.url} target="_blank" rel="noreferrer">
+              <TicketImage src={image.url} key={image.url}></TicketImage>
+            </a>
+            <DeleteImageButton
+              src="/delete.png"
+              onClick={() => removeTicketImage(image.url, image.id)}
+            ></DeleteImageButton>
+          </ImageContainer>
         ))}
       </ImagesList>
       <select
@@ -144,7 +181,7 @@ const Ticket: React.FC<TicketPageProps> = ({
         ))}
       </select>
       <input type="file" accept="image/*" onChange={handleImageChange} />
-      <button onClick={handleUpload}>Upload</button>
+      {selectedImage && <button onClick={handleUpload}>Upload</button>}
       {isCreatingNewTicket && <button onClick={saveNewTicket}>Save</button>}
     </TicketContainer>
   );

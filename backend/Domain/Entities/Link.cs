@@ -2,6 +2,10 @@ using System;
 
 public class Link : BaseEntity
 {
+    public Link()
+    {
+
+    }
     public Link(Guid ticketId, string url)
     {
         this.TicketId = ticketId;

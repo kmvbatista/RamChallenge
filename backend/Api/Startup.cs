@@ -36,10 +36,10 @@ namespace Api
                 });
             });
             services.ConfigureApplicationCookie(options =>
-{
-    options.Cookie.SameSite = SameSiteMode.None;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Use 'None' in development, 'Always' in production
-});
+            {
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Use 'None' in development, 'Always' in production
+            });
 
             services.AddMvc(options =>
                 options.Filters.Add(typeof(JsonExceptionFilter))

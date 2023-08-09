@@ -18,10 +18,11 @@ public class TicketService : ITicketService
         _linkMapper = new LinkMapper();
         _status_service = status_service;
     }
-    public async Task<Ticket> Create(TicketRequestModel requestModel)
+    public async Task<TicketResponseModel> Create(TicketRequestModel requestModel)
     {
         Ticket ticket = MapTicketFromRequestModel(requestModel);
-        return await _ticketRepository.Create(ticket);
+        var createdTicket = await _ticketRepository.Create(ticket);
+        return MapTicketToResponseModel(createdTicket);
     }
     public async Task<IList<TicketResponseModel>> GetAll()
     {
@@ -49,10 +50,14 @@ public class TicketService : ITicketService
     public async Task<TicketResponseModel> AddTicketLink(Guid id, string linkUrl)
     {
         var ticketToUpdate = await _ticketRepository.GetById(id);
-        ticketToUpdate.AddLink(linkUrl);
+        ticketToUpdate.UpdateLinks(linkUrl);
         var updatedTicket = await _ticketRepository.Update(ticketToUpdate);
         var result = MapTicketToResponseModel(updatedTicket);
         return result;
+    }
+    public async Task RemoveTicketLink(Guid linkId)
+    {
+        await _ticketRepository.RemoveTicketLink(linkId);
     }
     private TicketResponseModel MapTicketToResponseModel(Ticket ticket)
     {
@@ -61,7 +66,6 @@ public class TicketService : ITicketService
         mappedTicket.links = ticketLinks;
         return mappedTicket;
     }
-
     private Ticket MapTicketFromRequestModel(TicketRequestModel ticket)
     {
         var mappedTicket = _ticketMapper.MapFromRequestModel(ticket);
