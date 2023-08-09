@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Column } from "src/components/GlobalComponents";
 import { useForm } from "src/customHooks/useForm";
 import { Board } from "src/models/Board";
-import { createStatus } from "src/services/statusService";
+import { createStatus } from "src/services/statusApiService";
 import { NewStatusContainer } from "src/styles";
 
 interface NewStatusProps {}

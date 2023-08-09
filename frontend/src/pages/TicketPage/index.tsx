@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Ticket from "./components/Ticket";
 import { TicketModel } from "src/models/TicketModel";
-import { getTicketById } from "src/services/ticketService";
-import { getAllStatuses } from "src/services/statusService";
+import { getTicketById } from "src/services/ticketApiService";
+import { getAllStatuses } from "src/services/statusApiService";
 
 interface TicketPageProps {}
 

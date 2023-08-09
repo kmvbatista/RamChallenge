@@ -3,10 +3,8 @@ import { Column, Row } from "../../components/GlobalComponents";
 import { TicketModel } from "src/models/TicketModel";
 import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import Status from "./components/Status";
-import { getAllStatuses } from "src/services/statusService";
-import { getAllTickets, updateTicket } from "src/services/ticketService";
-import { Link } from "react-router-dom";
-import Swal from "sweetalert2";
+import { getAllStatuses } from "src/services/statusApiService";
+import { getAllTickets, updateTicket } from "src/services/ticketApiService";
 import { PageLink } from "src/styles";
 
 interface BoardProps {}
@@ -93,6 +91,7 @@ const Board: React.FC<BoardProps> = (props) => {
                     dropProvided={dropProvided}
                     status={status}
                     ticketsByStatusId={ticketsByStatusId}
+                    setTickets={setTickets}
                   ></Status>
                 )}
               </Droppable>

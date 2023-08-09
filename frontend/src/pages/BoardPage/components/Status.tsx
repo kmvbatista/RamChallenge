@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TicketCategory } from "src/models/TicketCategory";
 import { TicketModel } from "src/models/TicketModel";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { Draggable } from "react-beautiful-dnd";
 import { Column, Row } from "src/components/GlobalComponents";
 import Ticket from "src/pages/TicketPage/components/Ticket";
 import { SortButton, StatusTitle } from "src/styles";
@@ -10,16 +10,17 @@ interface StatusProps {
   status: any;
   dropProvided: any;
   ticketsByStatusId: { statusId: TicketModel[] };
+  setTickets: React.Dispatch<React.SetStateAction<TicketModel[]>>;
 }
 
 const Status: React.FC<StatusProps> = ({
   status,
   dropProvided,
   ticketsByStatusId,
+  setTickets,
 }) => {
   const [isSorting, setIsSorting] = useState<boolean>(false);
   const getDraggableTicketStyle = (isDragging, draggableStyle) => {
-    console.log("isDragging", isDragging);
     return {
       ...draggableStyle,
       userSelect: "none",
@@ -71,7 +72,7 @@ const Status: React.FC<StatusProps> = ({
       <Row style={{ justifyContent: "space-around", padding: "8px" }}>
         <StatusTitle>{status.name}</StatusTitle>
         <SortButton
-          src="/sort.png"
+          src={isSorting ? "/isSorting.png" : "/sort.png"}
           onClick={() => setIsSorting(!isSorting)}
         ></SortButton>
       </Row>
@@ -105,6 +106,20 @@ const Status: React.FC<StatusProps> = ({
                     key={ticket.id}
                     ticket={ticket}
                     isMinimizedVersion
+                    onTicketChange={(ticket) => {
+                      setTickets((previousTickets) => {
+                        const foundTicket = previousTickets.find(
+                          (t) => t.id === ticket.id
+                        );
+                        const newListWithoutFoundTicket =
+                          previousTickets.filter((t) => t.id !== ticket.id);
+                        newListWithoutFoundTicket.push({
+                          ...foundTicket,
+                          ...ticket,
+                        });
+                        return newListWithoutFoundTicket;
+                      });
+                    }}
                   ></Ticket>
                 </div>
               );

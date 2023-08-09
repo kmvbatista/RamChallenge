@@ -5,11 +5,4 @@ const instance = axios.create({
   withCredentials: false,
 });
 
-// function responseErrorInterceptor() {}
-
-// instance.interceptors.response.use(
-//   (response) => response,
-//   responseErrorInterceptor
-// );
-
 export default instance;

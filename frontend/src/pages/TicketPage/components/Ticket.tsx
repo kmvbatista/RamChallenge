@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Column, Row } from "src/components/GlobalComponents";
+import React, { useEffect, useState } from "react";
+import { Row } from "src/components/GlobalComponents";
 import { TicketModel } from "src/models/TicketModel";
 import {
   DeleteImageButton,
@@ -22,7 +22,7 @@ import {
   saveTicketImage,
   updateTicket,
   uploadImage,
-} from "src/services/ticketService";
+} from "src/services/ticketApiService";
 import { useNavigate } from "react-router-dom";
 
 interface TicketPageProps {
@@ -30,6 +30,7 @@ interface TicketPageProps {
   isCreatingNewTicket?: boolean;
   isMinimizedVersion?: boolean;
   statuses?: any[];
+  onTicketChange?: (ticket: TicketModel) => void;
 }
 
 const Ticket: React.FC<TicketPageProps> = ({
@@ -37,10 +38,10 @@ const Ticket: React.FC<TicketPageProps> = ({
   isCreatingNewTicket,
   isMinimizedVersion,
   statuses,
+  onTicketChange,
 }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const navigate = useNavigate();
-  console.log(statuses);
   const initialFormValue: TicketModel = ticket
     ? {
         links: [],
@@ -53,6 +54,10 @@ const Ticket: React.FC<TicketPageProps> = ({
   const [formValues, updateValues, setFormValues] = useForm<TicketModel>({
     ...initialFormValue,
   });
+
+  useEffect(() => {
+    onTicketChange(formValues);
+  }, [formValues, onTicketChange]);
 
   function saveEdittingChanges(formValues) {
     if (!isCreatingNewTicket) {

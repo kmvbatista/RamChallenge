@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Ticket from "../TicketPage/components/Ticket";
 import { TicketModel } from "src/models/TicketModel";
-import { getAllStatuses } from "src/services/statusService";
+import { getAllStatuses } from "src/services/statusApiService";
 
 interface NewTicketPageProps {}
 
