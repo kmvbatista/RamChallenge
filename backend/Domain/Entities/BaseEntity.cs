@@ -6,7 +6,7 @@ using ValidationResult = FluentValidation.Results.ValidationResult;
 
 public abstract class BaseEntity
 {
-    public Guid Id { get; protected set; }
+    public Guid Id { get; set; }
     [NotMapped]
     public bool IsValid { get; private set; }
     [NotMapped]

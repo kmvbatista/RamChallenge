@@ -125,6 +125,87 @@ public class TicketServiceTests
         await updateAction.Should().ThrowAsync<ValidationException>().WithMessage("Task names have to be at least 3 characters long\nDeadline must be in the future");
     }
 
+    [Test]
+    public async Task GetById_ValidId_ReturnsTicket()
+    {
+        // Arrange
+        Guid ticketId = Guid.NewGuid();
+        Ticket expectedTicket = new Ticket { Id = ticketId, /* Set other properties */ };
+        _mockTicketRepository.Setup(repo => repo.GetById(ticketId)).ReturnsAsync(expectedTicket);
+
+        // Act
+        Ticket result = await _ticketService.GetById(ticketId);
+
+        // Assert
+        Assert.AreEqual(expectedTicket, result);
+    }
+
+    [Test]
+    public async Task GetAll_ReturnsListOfTickets()
+    {
+        // Arrange
+        List<Ticket> expectedTickets = new List<Ticket>
+        {
+            new Ticket { Id = Guid.NewGuid(), /* Set other properties */ },
+            new Ticket { Id = Guid.NewGuid(), /* Set other properties */ }
+        };
+        _mockTicketRepository.Setup(repo => repo.GetAll()).ReturnsAsync(expectedTickets);
+
+        // Act
+        IList<Ticket> result = await _ticketService.GetAll();
+
+        // Assert
+        CollectionAssert.AreEqual(expectedTickets, result);
+    }
+
+    [Test]
+    public async Task Delete_ValidId_DeletesTicket()
+    {
+        // Arrange
+        Guid ticketId = Guid.NewGuid();
+        _mockTicketRepository.Setup(repo => repo.Delete(ticketId)).Returns(Task.CompletedTask);
+
+        // Act
+        await _ticketService.Delete(ticketId);
+
+        // Assert
+        _mockTicketRepository.Verify(repo => repo.Delete(ticketId), Times.Once);
+    }
+
+    [Test]
+    public async Task AddTicketLink_ValidData_UpdatesAndReturnsTicket()
+    {
+        // Arrange
+        Guid ticketId = Guid.NewGuid();
+        string linkUrl = "https://example.com";
+        Ticket ticket = new Ticket { Id = ticketId, /* Set other properties */ };
+        _mockTicketRepository.Setup(repo => repo.GetById(ticketId)).ReturnsAsync(ticket);
+        _mockTicketRepository.Setup(repo => repo.Update(It.IsAny<Ticket>())).ReturnsAsync(ticket);
+
+        // Act
+        Ticket result = await _ticketService.AddTicketLink(ticketId, linkUrl);
+
+        // Assert
+        Assert.AreEqual(ticket, result);
+        Assert.Contains(linkUrl, result.Links.Select(l => l.Url).ToList());
+    }
+
+    [Test]
+    public async Task RemoveTicketLink_ValidLinkId_RemovesLinkAndUpdatesTicket()
+    {
+        // Arrange
+        Guid linkId = Guid.NewGuid();
+        var links = new List<Link> { new Link { Url = "https://example.com" } };
+        Ticket ticket = new Ticket { Id = Guid.NewGuid(), Links = (IList<Link>)links.ToList() };
+        _mockTicketRepository.Setup(repo => repo.RemoveTicketLink(ticket.Id));
+
+        // Act
+        await _ticketService.RemoveTicketLink(linkId);
+
+        // Assert
+        _mockTicketRepository.Verify(r => r.RemoveTicketLink(It.IsAny<Guid>()), Times.Once);
+    }
+
     private TicketResponseModel MapTicketToResponseModel(Ticket ticket)
     {
         var mappedTicket = _ticketMapper.MapToResponseModel(ticket);
