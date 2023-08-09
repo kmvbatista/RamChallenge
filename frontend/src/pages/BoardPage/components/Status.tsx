@@ -29,7 +29,6 @@ const Status: React.FC<StatusProps> = ({
   return (
     <Column
       style={{
-        height: "100%",
         minWidth: "310px",
         marginRight: "10px",
         backgroundColor: "#727272bd",

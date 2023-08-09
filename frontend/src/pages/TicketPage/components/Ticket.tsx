@@ -39,7 +39,6 @@ const Ticket: React.FC<TicketPageProps> = ({
   statuses,
 }) => {
   const [selectedImage, setSelectedImage] = useState(null);
-  const [ticketCreationLinks, setticketCreationLinks] = useState<any[]>([]);
   const navigate = useNavigate();
   console.log(statuses);
   const initialFormValue: TicketModel = ticket

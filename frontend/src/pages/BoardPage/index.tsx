@@ -1,20 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Column, Row } from "../../components/GlobalComponents";
-import Ticket from "../TicketPage/components/Ticket";
-import { TicketCategory } from "src/models/TicketCategory";
 import { TicketModel } from "src/models/TicketModel";
-import { BoardTitle } from "../../styles";
-import {
-  DragDropContext,
-  Draggable,
-  DropResult,
-  Droppable,
-  OnDragEndResponder,
-} from "react-beautiful-dnd";
+import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import Status from "./components/Status";
 import { getAllStatuses } from "src/services/statusService";
 import { getAllTickets, updateTicket } from "src/services/ticketService";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 interface BoardProps {}
 
@@ -68,16 +60,18 @@ const Board: React.FC<BoardProps> = (props) => {
       }
     }
   }
+
   return (
     <Column
+      className="board"
       style={{
         minHeight: "100vh",
         minWidth: "100vw",
-        backgroundColor: "rgba(202, 204, 205, 0.8)",
       }}
     >
       <Row>
-        <Link to={"/ticket/new"}>Create new ticket</Link>
+        <Link to={"/ticket/new"}>New ticket</Link>
+        <Link to={"/status/new"}>New status</Link>
       </Row>
       <Row
         style={{

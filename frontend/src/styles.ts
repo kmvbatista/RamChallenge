@@ -52,7 +52,6 @@ export const TicketImage = styled.img`
 `;
 
 export const TicketContainer = styled(Column)`
-  width: 300px;
   padding: 5px;
   border-radius: 5px;
   box-shadow: #e3e2e245 1px 1px 10px 0px;
@@ -68,4 +67,10 @@ export const FavoriteIcon = styled.img`
   width: 14px;
   height: 14px;
   margin-right: 5px;
+`;
+
+export const NewStatusContainer = styled(Column)`
+  width: 100vh;
+  padding: 10vh;
+  margin: auto;
 `;
