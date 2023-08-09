@@ -5,6 +5,7 @@ import { Draggable } from "react-beautiful-dnd";
 import { Column, Row } from "src/components/GlobalComponents";
 import Ticket from "src/pages/TicketPage/components/Ticket";
 import { SortButton, StatusTitle } from "src/styles";
+import { sortTickets } from "../boardLogic";
 
 interface StatusProps {
   status: any;
@@ -28,30 +29,6 @@ const Status: React.FC<StatusProps> = ({
       margin: "10px 0",
     };
   };
-  function sortTickets(tickets: TicketModel[]) {
-    return tickets.sort((ticketA, ticketB) => {
-      if (
-        ticketA.category === TicketCategory.favorite &&
-        ticketB.category !== TicketCategory.favorite
-      ) {
-        return -1;
-      }
-      if (
-        ticketA.category !== TicketCategory.favorite &&
-        ticketB.category === TicketCategory.favorite
-      ) {
-        return 1;
-      }
-
-      if (ticketA.name < ticketB.name) {
-        return -1;
-      }
-      if (ticketA.name > ticketB.name) {
-        return 1;
-      }
-      return 0;
-    });
-  }
 
   const statusTickets = ticketsByStatusId[status.id];
 
