@@ -13,15 +13,17 @@ public class TicketServiceTests
     private Mock<ITicketRepository> _mockTicketRepository;
     private Mock<IStatusRepository> _mockStatusRepository;
     private TicketService _ticketService;
-    private StatusService _statusService;
+    private TicketMapper _ticketMapper;
+    private LinkMapper _linkMapper;
 
     [SetUp]
     public void Setup()
     {
         _mockTicketRepository = new Mock<ITicketRepository>();
         _mockStatusRepository = new Mock<IStatusRepository>();
-        _statusService = new StatusService(_mockStatusRepository.Object);
-        _ticketService = new TicketService(_mockTicketRepository.Object, _statusService);
+        _ticketService = new TicketService(_mockTicketRepository.Object);
+        _linkMapper = new LinkMapper();
+        _ticketMapper = new TicketMapper();
     }
 
     [Test]
@@ -41,7 +43,7 @@ public class TicketServiceTests
         };
         _mockStatusRepository.Setup(r => r.GetById(new Guid())).ReturnsAsync(new Status { Name = "In progress", Order = 1 });
         // Act
-        await _ticketService.Create(validRequestModel);
+        await _ticketService.Create(MapTicketFromRequestModel(validRequestModel));
 
         // Assert
         _mockTicketRepository.Verify(r => r.Create(It.IsAny<Ticket>()), Times.Once);
@@ -64,7 +66,7 @@ public class TicketServiceTests
         };
 
         // Act
-        Func<Task> createAction = async () => await _ticketService.Create(invalidRequestModel);
+        Func<Task> createAction = async () => await _ticketService.Create(MapTicketFromRequestModel(invalidRequestModel));
 
         // Assert
         await createAction.Should().ThrowAsync<ValidationException>().WithMessage("Task names have to be at least 3 characters long\nDeadline must be in the future");
@@ -121,6 +123,21 @@ public class TicketServiceTests
 
         // Assert
         await updateAction.Should().ThrowAsync<ValidationException>().WithMessage("Task names have to be at least 3 characters long\nDeadline must be in the future");
+    }
+
+    private TicketResponseModel MapTicketToResponseModel(Ticket ticket)
+    {
+        var mappedTicket = _ticketMapper.MapToResponseModel(ticket);
+        var ticketLinks = ticket?.Links?.Select(link => _linkMapper.MapToResponseModel(link))?.ToList();
+        mappedTicket.links = ticketLinks;
+        return mappedTicket;
+    }
+    private Ticket MapTicketFromRequestModel(TicketRequestModel ticket)
+    {
+        var mappedTicket = _ticketMapper.MapFromRequestModel(ticket);
+        mappedTicket.Links = ticket.Links.Select(x => _linkMapper.MapFromRequestModel(x)).ToList();
+        mappedTicket.Validate();
+        return mappedTicket;
     }
 
     // Similar tests for status and deadline scenarios can be written here

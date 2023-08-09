@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 
 public interface ITicketService
 {
-    Task<TicketResponseModel> Create(TicketRequestModel requestModel);
-    Task<IList<TicketResponseModel>> GetAll();
-    Task<TicketResponseModel> GetById(Guid id);
-    Task<TicketResponseModel> Update(Guid id, TicketRequestModel ticketRequestModel);
+    Task<Ticket> Create(Ticket ticket);
+    Task<IList<Ticket>> GetAll();
+    Task<Ticket> GetById(Guid id);
+    Task<Ticket> Update(Guid id, TicketRequestModel ticket);
     Task Delete(Guid id);
-    Task<TicketResponseModel> AddTicketLink(Guid id, string linkUrl);
+    Task<Ticket> AddTicketLink(Guid id, string linkUrl);
     Task RemoveTicketLink(Guid linkId);
 }
