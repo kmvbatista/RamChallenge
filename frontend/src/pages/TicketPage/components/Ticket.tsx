@@ -56,12 +56,14 @@ const Ticket: React.FC<TicketPageProps> = ({
   });
 
   useEffect(() => {
-    onTicketChange(formValues);
+    if (onTicketChange) {
+      onTicketChange(formValues);
+    }
   }, [formValues, onTicketChange]);
 
-  function saveEdittingChanges(formValues) {
+  function saveEdittingChanges(newFormValues) {
     if (!isCreatingNewTicket) {
-      updateTicket(ticket.id, formValues);
+      updateTicket(ticket.id, newFormValues);
     }
   }
 
@@ -77,7 +79,6 @@ const Ticket: React.FC<TicketPageProps> = ({
 
   function handleFavorite() {
     const newFormValues = { ...formValues };
-    debugger;
     if (newFormValues.category === TicketCategory.favorite) {
       newFormValues.category = TicketCategory.noCategory;
     } else {
@@ -149,40 +150,48 @@ const Ticket: React.FC<TicketPageProps> = ({
         name="description"
         value={formValues.description}
         onChange={updateValues}
-        onBlur={saveEdittingChanges}
+        onBlur={() => saveEdittingChanges(formValues)}
       ></DescriptionInput>
       <input
         name="deadline"
         type="date"
         value={formValues.deadline && formValues.deadline.split("T")[0]}
         onChange={updateValues}
-        onBlur={saveEdittingChanges}
+        onBlur={() => saveEdittingChanges(formValues)}
       ></input>
-      <ImagesList>
-        {formValues.links?.map((image) => (
-          <ImageContainer key={image.url}>
-            <a href={image.url} target="_blank" rel="noreferrer">
-              <TicketImage src={image.url} key={image.url}></TicketImage>
-            </a>
-            <DeleteImageButton
-              src="/delete.png"
-              onClick={() => removeTicketImage(image.url, image.id)}
-            ></DeleteImageButton>
-          </ImageContainer>
-        ))}
-      </ImagesList>
-      <select
-        onChange={(e) => {
-          updateValues(e);
-          saveEdittingChanges(formValues);
-        }}
-        name="statusId"
-      >
-        {statuses?.map((status) => (
-          <option value={status.id}>{status.name}</option>
-        ))}
-      </select>
-      <input type="file" accept="image/*" onChange={handleImageChange} />
+
+      {!isMinimizedVersion && (
+        <>
+          <select
+            onChange={(e) => {
+              updateValues(e);
+              saveEdittingChanges({ ...formValues, statusId: e.target.value });
+            }}
+            value={formValues.statusId}
+            name="statusId"
+          >
+            {statuses?.map((status) => (
+              <option key={status.id} value={status.id}>
+                {status.name}
+              </option>
+            ))}
+          </select>
+          <ImagesList>
+            {formValues.links?.map((image) => (
+              <ImageContainer key={image.url}>
+                <a href={image.url} target="_blank" rel="noreferrer">
+                  <TicketImage src={image.url} key={image.url}></TicketImage>
+                </a>
+                <DeleteImageButton
+                  src="/delete.png"
+                  onClick={() => removeTicketImage(image.url, image.id)}
+                ></DeleteImageButton>
+              </ImageContainer>
+            ))}
+          </ImagesList>
+          <input type="file" accept="image/*" onChange={handleImageChange} />
+        </>
+      )}
       {selectedImage && <button onClick={handleUpload}>Upload</button>}
       {isCreatingNewTicket && <button onClick={saveNewTicket}>Save</button>}
     </TicketContainer>

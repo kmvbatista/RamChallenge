@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { TicketCategory } from "src/models/TicketCategory";
 import { TicketModel } from "src/models/TicketModel";
 import { Draggable } from "react-beautiful-dnd";
@@ -59,9 +59,26 @@ const Status: React.FC<StatusProps> = ({
     ? sortTickets(statusTickets)
     : statusTickets;
 
+  function onTicketChange(ticket) {
+    setTickets((previousTickets) => {
+      const foundTicket = previousTickets.find((t) => t.id === ticket.id);
+      const newListWithoutFoundTicket = previousTickets.filter(
+        (t) => t.id !== ticket.id
+      );
+      newListWithoutFoundTicket.push({
+        ...foundTicket,
+        ...ticket,
+      });
+      return newListWithoutFoundTicket;
+    });
+  }
+
+  const onTicketChangeCallback = useCallback(onTicketChange, []);
+
   return (
     <Column
       style={{
+        minHeight: "100vh",
         minWidth: "310px",
         marginRight: "10px",
         backgroundColor: "#727272bd",
@@ -79,7 +96,6 @@ const Status: React.FC<StatusProps> = ({
       <Column
         style={{
           height: "100%",
-          justifyContent: "center",
           width: "100%",
           alignItems: "center",
         }}
@@ -106,20 +122,7 @@ const Status: React.FC<StatusProps> = ({
                     key={ticket.id}
                     ticket={ticket}
                     isMinimizedVersion
-                    onTicketChange={(ticket) => {
-                      setTickets((previousTickets) => {
-                        const foundTicket = previousTickets.find(
-                          (t) => t.id === ticket.id
-                        );
-                        const newListWithoutFoundTicket =
-                          previousTickets.filter((t) => t.id !== ticket.id);
-                        newListWithoutFoundTicket.push({
-                          ...foundTicket,
-                          ...ticket,
-                        });
-                        return newListWithoutFoundTicket;
-                      });
-                    }}
+                    onTicketChange={onTicketChangeCallback}
                   ></Ticket>
                 </div>
               );

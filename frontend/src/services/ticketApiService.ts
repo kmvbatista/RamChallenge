@@ -11,6 +11,7 @@ export async function getAllTickets() {
 }
 
 export async function updateTicket(ticketId, updatedTicket) {
+  debugger;
   const response = await api.put(`/ticket/${ticketId}`, updatedTicket);
   return response.data;
 }

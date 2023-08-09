@@ -42,13 +42,13 @@ export const DeleteImageButton = styled.img`
   position: absolute;
   right: -1px;
   top: 0;
-  width: 8px;
-  height: 8px;
+  width: 20px;
+  height: 20px;
 `;
 
 export const TicketImage = styled.img`
-  max-width: 80px;
-  max-height: 80px;
+  max-width: 200px;
+  max-height: 200px;
 `;
 
 export const TicketContainer = styled(Column)`
@@ -64,6 +64,7 @@ export const StatusTitle = styled.p`
 `;
 
 export const FavoriteIcon = styled.img`
+  cursor: pointer;
   width: 14px;
   height: 14px;
   margin-right: 5px;

@@ -84,7 +84,7 @@ const Board: React.FC<BoardProps> = (props) => {
           {sortedStatuses &&
             tickets &&
             sortedStatuses.map((status) => (
-              <Droppable droppableId={status.id.toString()} type="QUOTE">
+              <Droppable key={status.id} droppableId={status.id} type="QUOTE">
                 {(dropProvided, dropSnapshot) => (
                   <Status
                     key={status.id}

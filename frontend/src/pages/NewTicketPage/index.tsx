@@ -6,12 +6,10 @@ import { getAllStatuses } from "src/services/statusApiService";
 interface NewTicketPageProps {}
 
 const NewTicketPage: React.FC<NewTicketPageProps> = (props) => {
-  debugger;
   const [statuses, setStatuses] = useState<any[]>();
   useEffect(() => {
     async function fetchStatuses() {
       const foundStatuses = await getAllStatuses();
-      debugger;
       setStatuses(foundStatuses);
     }
     fetchStatuses();
